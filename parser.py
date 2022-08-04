@@ -90,7 +90,3 @@ class Goods_Finder():
                 max_page = 1
                 
             self.parse_goods(link, max_page)
-
-        
-
-__URL__ = "http://xn--74-6kcasybqqi.xn--p1ai"
