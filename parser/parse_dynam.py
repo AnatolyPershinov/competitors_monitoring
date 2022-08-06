@@ -1,12 +1,7 @@
-from calendar import c
-from unicodedata import category
 import requests
-import time
-import json
 
 from bs4 import BeautifulSoup
 from datetime import datetime
-from pydantic import BaseModel
 
 
 class Good():
@@ -30,7 +25,7 @@ class Good():
         return f"{self.category} {self.name} {self.price} {self.card_price} {self.url} {self.update_time}"
 
 
-class Goods_Finder():
+class GoodsFinder():
     Goods = []
 
     def __init__(self, url):
@@ -90,7 +85,3 @@ class Goods_Finder():
                 max_page = 1
                 
             self.parse_goods(link, max_page)
-
-        
-
-__URL__ = "http://xn--74-6kcasybqqi.xn--p1ai"
