@@ -23,10 +23,19 @@ class Good():
 
     def __repr__(self):
         return f"{self.category} {self.name} {self.price} {self.card_price} {self.url} {self.update_time}"
+    
+    def get_data(self):
+        return {
+            "category" : self.category,
+            "price" : self.price,
+            "card_price" : self.card_price,
+            "url" : self.url,
+            "update_time" : self.update_time
+        }
 
 
 class GoodsFinder():
-    Goods = []
+    goods = []
 
     def __init__(self, url):
         self.url = url
@@ -40,6 +49,7 @@ class GoodsFinder():
             links.append(row.findAll('a')[0].get('href'))
         self.parse_catalog(links)
 
+
     def parse_goods(self, link, page):
         result = []
         for i in range(1, page+1):
@@ -49,7 +59,6 @@ class GoodsFinder():
             goods = soup.findAll("div", class_="catalog_item item_wrap")
             category = soup.select("h1")[0].text
             for good in goods:
-                
                 try:
                     name = good.findAll("div", class_="item-title")[0].findAll("span")[0].text
                     price = good.findAll("div", class_="price")[0]["data-value"]
@@ -62,7 +71,7 @@ class GoodsFinder():
                     if price_card.find("\\xa0"):
                         price_card = price_card.replace("\\xa0", "")
 
-                    self.Goods.append(
+                    self.goods.append(
                         Good(name, category, 
                             price, price_card, url
                     ))
@@ -70,7 +79,6 @@ class GoodsFinder():
                 except Exception as e:
                     print(f"error with {self.url+link}: \n {e}")
                 
-
         
     def parse_catalog(self, links):
         result = {}
@@ -83,5 +91,13 @@ class GoodsFinder():
                 max_page = int(soup.findAll("div", class_="nums")[0].findAll("a")[-1].text)
             except Exception:
                 max_page = 1
-                
+
             self.parse_goods(link, max_page)
+
+
+    def getDict(self):
+        res = {}
+        for good in self.goods:
+            res[good.name] = good.get_data()
+
+        return res
