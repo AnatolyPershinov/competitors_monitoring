@@ -14,7 +14,8 @@ def json_serial(obj):
 def main():
     rowdata = GoodsFinder("https://xn--74-6kcasybqqi.xn--p1ai")
     with open("data.json", "w", encoding="utf-8") as f:
+        print(data)
         data = json.dumps(rowdata.getDict())
-        print(data, file=f, default=json_serial)
+        print(data, file=f)
 
 main()
