@@ -1,43 +1,57 @@
 import requests
+import time
+import json
 
 from bs4 import BeautifulSoup
-from datetime import datetime
 
 
 class Good():
-    name = ""
-    category = ""
-    price = 0
-    card_price = 0
-    update_time = 0
-    url = ""
 
     def __init__(self, name, category, 
-                price, card_price, url):
+                price, card_price, url, update_time = int(time.time())):
+
         self.name = name
         self.category = category
-        self.price = price
-        self.card_price = card_price
+        self.price = {
+            "common" : price,
+            "card" : card_price,
+            "update_time" : update_time,
+        }
         self.url = url
-        self.update_time = datetime.now()
+
 
     def __repr__(self):
-        return f"{self.category} {self.name} {self.price} {self.card_price} {self.url} {self.update_time}"
+        return f"{self.category} {self.name} {self.price}  {self.url} "
     
+
     def get_data(self):
         return {
             "category" : self.category,
             "price" : self.price,
-            "card_price" : self.card_price,
             "url" : self.url,
-            "update_time" : self.update_time
         }
 
 
 class GoodsFinder():
     goods = []
 
-    def __init__(self, url):
+    def __init__(self):
+        pass
+
+    def get_data_from_json(self, filename):
+        with open(filename, "r", encoding="utf-8") as f:
+            res = json.loads(f.read())
+            for k, v in res.items():
+                self.goods.append(Good(
+                    name=k, 
+                    category = v["category"],
+                    price = v["price"]["common"],
+                    card_price = v["price"]["card"],
+                    update_time = v["price"]["update_time"],
+                    url= v["url"]
+                ))
+
+    def get_data_from_site(self, url):
         self.url = url
         self.session = requests.session()
         res = self.session.get(url)

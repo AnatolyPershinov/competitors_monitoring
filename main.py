@@ -1,21 +1,32 @@
 import json
-import os.path
-from datetime import datetime, date
+from typing import NoReturn
 
 from parse_dynam import GoodsFinder
 
-def json_serial(obj):
-
-    if isinstance(obj, (datetime, date)):
-        return obj.isoformat()
-    raise TypeError ("Type %s not serializable" % type(obj))
-
 
 def main():
+    read_data("data.json")
+    
     rowdata = GoodsFinder("https://xn--74-6kcasybqqi.xn--p1ai")
-    with open("data.json", "w", encoding="utf-8") as f:
-        print(data)
-        data = json.dumps(rowdata.getDict())
+    save_data(rowdata, "data.json")
+
+
+def read_data(filename : str) -> dict:
+    with open(filename, "r", encoding="utf-8") as f:
+        res = json.loads(f.read())
+    return res
+
+
+def compare(new : GoodsFinder, old : dict) -> dict:
+    for good in new.goods:
+        old_good = old.get(good.name) 
+        if old_good != None:
+            if 
+
+
+def save_data(data: GoodsFinder, filename : str) -> NoReturn: 
+    with open(filename, "w", encoding="utf-8") as f:
+        data = json.dumps(data.getDict())
         print(data, file=f)
 
 main()
