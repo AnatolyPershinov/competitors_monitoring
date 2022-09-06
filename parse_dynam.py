@@ -8,15 +8,12 @@ from bs4 import BeautifulSoup
 class Good():
 
     def __init__(self, name, category, 
-                price, card_price, url, update_time = int(time.time())):
+                price, url):
 
         self.name = name
         self.category = category
-        self.price = {
-            "common" : price,
-            "card" : card_price,
-            "update_time" : update_time,
-        }
+        self.price = price
+
         self.url = url
 
 
@@ -38,6 +35,7 @@ class GoodsFinder():
     def __init__(self):
         pass
 
+
     def get_data_from_json(self, filename):
         with open(filename, "r", encoding="utf-8") as f:
             res = json.loads(f.read())
@@ -45,11 +43,11 @@ class GoodsFinder():
                 self.goods.append(Good(
                     name=k, 
                     category = v["category"],
-                    price = v["price"]["common"],
-                    card_price = v["price"]["card"],
-                    update_time = v["price"]["update_time"],
-                    url= v["url"]
+                    price = v["price"],
+                    url = v["url"]
                 ))
+        return self.goods
+
 
     def get_data_from_site(self, url):
         self.url = url
@@ -85,9 +83,15 @@ class GoodsFinder():
                     if price_card.find("\\xa0"):
                         price_card = price_card.replace("\\xa0", "")
 
+                    pricelist = [{
+                        "common" : price,
+                        "card" : price_card, 
+                        "update_time" : int(time.time())
+                    }]
+
                     self.goods.append(
                         Good(name, category, 
-                            price, price_card, url
+                            pricelist, url
                     ))
 
                 except Exception as e:
@@ -109,9 +113,20 @@ class GoodsFinder():
             self.parse_goods(link, max_page)
 
 
+    def save_to_json(self, filename):
+        res = {}
+        for good in self.goods:
+            res[good.name] = good.get_data()
+        
+        with open(filename, "w", encoding="utf-8") as f:
+            data = json.dumps(res)
+            print(data, file=f)
+
+
     def getDict(self):
         res = {}
         for good in self.goods:
             res[good.name] = good.get_data()
+            res[good.name]["object"] = good
 
         return res
