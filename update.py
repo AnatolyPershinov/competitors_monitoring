@@ -18,6 +18,7 @@ def main():
     new.get_data_from_site("https://xn--74-6kcasybqqi.xn--p1ai")
 
     old, changes = compare(new, old)
+
     print(changes)
     save_data(old, "data.json")
     
@@ -31,8 +32,8 @@ def compare(new: GoodsFinder, old: GoodsFinder):
         if old_dict.get(k):
             if old_dict[k]["price"][-1]["common"] != v["price"][-1]["common"] or \
             old_dict[k]["price"][-1]["card"] != v["price"][-1]["card"]:
-                old.goods.append(new_dict[k]["object"])
-                changes.append(new_dict[k]["object"])
+                old_dict[k]["object"].price.append(v["price"])
+                changes.append(old_dict[k]["object"])
         else:
             old_dict[k] = new_dict[k]
             changes.append(new_dict[k]["object"])
