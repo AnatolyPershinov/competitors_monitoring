@@ -30,10 +30,8 @@ class Good():
 
 
 class GoodsFinder():
-    goods = []
-
     def __init__(self):
-        pass
+        self.goods = []
 
 
     def get_data_from_json(self, filename):
@@ -46,7 +44,6 @@ class GoodsFinder():
                     price = v["price"],
                     url = v["url"]
                 ))
-        return self.goods
 
 
     def get_data_from_site(self, url):

@@ -1,5 +1,4 @@
 import json
-from re import L
 from typing import NoReturn
 
 from parse_dynam import GoodsFinder
@@ -16,7 +15,6 @@ def main():
         print("wrong decode. skip it")
 
     new = GoodsFinder()
-    print(old, new)
     new.get_data_from_site("https://xn--74-6kcasybqqi.xn--p1ai")
 
     old, changes = compare(new, old)
@@ -33,8 +31,6 @@ def compare(new: GoodsFinder, old: GoodsFinder):
         if old_dict.get(k):
             if old_dict[k]["price"][-1]["common"] != v["price"][-1]["common"] or \
             old_dict[k]["price"][-1]["card"] != v["price"][-1]["card"]:
-                
-                print(old_dict[k]["price"][-1]["common"], v["price"][-1]["common"])
                 old.goods.append(new_dict[k]["object"])
                 changes.append(new_dict[k]["object"])
         else:
