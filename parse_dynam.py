@@ -14,10 +14,15 @@ class Good():
         self.category = category
         self.price = price
         self.url = url
-
+    
 
     def __repr__(self):
-        return f"{self.category} : {self.name} {self.price}  {self.url} "
+        return {
+            "name" : self.name,
+            "category" : self.category,
+            "price" : self.price,
+            "url" : self.url,
+            }
     
 
     def get_data(self):

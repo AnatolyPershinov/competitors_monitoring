@@ -18,8 +18,9 @@ def main():
     new.get_data_from_site("https://xn--74-6kcasybqqi.xn--p1ai")
 
     old, changes = compare(new, old)
+    with open("changes.json", "w", encoding="UTF-8") as f:
+        print(json.dumps(changes), file=f)
 
-    print(changes)
     save_data(old, "data.json")
     
 
@@ -33,16 +34,15 @@ def compare(new: GoodsFinder, old: GoodsFinder):
             if old_dict[k]["price"][-1]["common"] != v["price"][-1]["common"] or \
             old_dict[k]["price"][-1]["card"] != v["price"][-1]["card"]:
                 old_dict[k]["object"].price.append(v["price"])
-                changes.append(old_dict[k]["object"])
+                changes.append(old_dict[k]["object"].__repr__())
         else:
-            old_dict[k] = new_dict[k]
-            changes.append(new_dict[k]["object"])
+            old.goods.append(new_dict[k]["object"])
+            changes.append(new_dict[k]["object"].__repr__())
     
     return old, changes
 
 
 def save_data(data: GoodsFinder, filename : str) -> NoReturn: 
     data.save_to_json(filename)
-
 
 main()
