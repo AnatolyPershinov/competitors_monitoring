@@ -122,6 +122,7 @@ class GoodsFinder():
         with open(filename, "w", encoding="utf-8") as f:
             data = json.dumps(res)
             print(data, file=f)
+        return 
 
 
     def getDict(self):

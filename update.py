@@ -1,10 +1,9 @@
 import json
-from typing import NoReturn
 
-from parse_dynam import GoodsFinder
+from parse_dynam import Good, GoodsFinder
 
 
-def main():
+def update():
     old = GoodsFinder()
     try:
         old.get_data_from_json("data.json")
@@ -17,32 +16,32 @@ def main():
     new = GoodsFinder()
     new.get_data_from_site("https://xn--74-6kcasybqqi.xn--p1ai")
 
+    
     old, changes = compare(new, old)
-    with open("changes.json", "w", encoding="UTF-8") as f:
-        print(json.dumps(changes), file=f)
-
+    
+    save_data(changes, "changes.json")
     save_data(old, "data.json")
+    
+    return changes
     
 
 def compare(new: GoodsFinder, old: GoodsFinder):
     new_dict = new.getDict()
     old_dict = old.getDict()
-    changes = []
+    changes = GoodsFinder()
 
     for k, v in new_dict.items():
         if old_dict.get(k):
             if old_dict[k]["price"][-1]["common"] != v["price"][-1]["common"] or \
             old_dict[k]["price"][-1]["card"] != v["price"][-1]["card"]:
                 old_dict[k]["object"].price.append(v["price"])
-                changes.append(old_dict[k]["object"].__repr__())
+                changes.goods.append(old_dict[k]["object"])
         else:
             old.goods.append(new_dict[k]["object"])
-            changes.append(new_dict[k]["object"].__repr__())
+            changes.goods.append(new_dict[k]["object"])
     
     return old, changes
 
 
-def save_data(data: GoodsFinder, filename : str) -> NoReturn: 
+def save_data(data: GoodsFinder, filename : str): 
     data.save_to_json(filename)
-
-main()
