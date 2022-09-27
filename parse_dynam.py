@@ -1,5 +1,7 @@
+from types import new_class
+from unicodedata import category
 import requests
-import time
+import datetime, time
 import json
 
 from bs4 import BeautifulSoup
@@ -35,7 +37,8 @@ class Good():
 
 class GoodsFinder():
     def __init__(self):
-        self.goods = []
+        self.url = "https://xn--74-6kcasybqqi.xn--p1ai"
+        self.goods: list[Good] = [] 
 
 
     def get_data_from_json(self, filename):
@@ -50,10 +53,9 @@ class GoodsFinder():
                 ))
 
 
-    def get_data_from_site(self, url):
-        self.url = url
+    def get_data_from_site(self):
         self.session = requests.session()
-        res = self.session.get(url)
+        res = self.session.get(self.url)
         soup = BeautifulSoup(res.text, "html.parser")
         stage1 = soup.findAll("li", class_="menu_item")
         links = []
@@ -132,3 +134,29 @@ class GoodsFinder():
             res[good.name]["object"] = good
 
         return res
+
+    
+    def getReport(self):
+        result = ""
+        _category = ""
+        count = 1
+        self.goods = sorted(self.goods, key=lambda item: item.category)
+        for good in self.goods:
+            category = good.category
+            if _category != category:
+                result += f"{category}: \n"
+                count = 1    
+            name = good.name
+            url = good.url
+            result += f"{count}. {name}   {self.url+url} "
+            if len(good.price) > 1:
+                old_pice = good.price[-2]
+                new_price = good.price[-1]
+                result += f"{old_pice['common']} -> {new_price['common']}" 
+            else:
+                result += f"Новый товар: {good.price[0]['common']}"
+            
+            dt = datetime.datetime.fromtimestamp("%d.%M.%Y %H:%M", good.price[-1]["update_time"])
+            dt_tuple = dt.timetuple()
+            
+

@@ -14,7 +14,7 @@ def update():
         print("wrong decode. skip it")
 
     new = GoodsFinder()
-    new.get_data_from_site("https://xn--74-6kcasybqqi.xn--p1ai")
+    new.get_data_from_site()
 
     
     old, changes = compare(new, old)

@@ -42,8 +42,6 @@ def get_data(message):
     if message.text == "Получить изменения":
         changes = ""
         with open("changes.json", "r") as f:
-            data = json.load(f)
-            data = sorted(data, key=lambda d: d["category"])
             for row in data:
                 name = row["name"]
                 category = row["category"]
@@ -51,7 +49,7 @@ def get_data(message):
                 priceold = row["price"][0]["common"]
                 url = row["url"]
                 changes += f"{category}   {name} {priceold} -> {pricenow}  {url}\n"
-                
+
         bot.send_message(message.from_user.id, changes)
 
 actions = {
